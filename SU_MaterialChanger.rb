@@ -290,35 +290,27 @@ end
 
 if ( not file_loaded?("SU_MaterialChanger.rb") )
 
-  # ----------------------------------------------------------------------------
   # Create the Change Material command.
-  # ----------------------------------------------------------------------------
   change_materials_cmd = UI::Command.new("Change Materials") { 
     SU_ChangeMaterial.new().run()
   }
-  change_materials_cmd.small_icon = "SU_MaterialChanger/images/change_materials_small.png"
-  change_materials_cmd.large_icon = "SU_MaterialChanger/images/change_materials_large.png"
+  change_materials_cmd.small_icon = "SU_MaterialChanger/images/material_changer_small.png"
+  change_materials_cmd.large_icon = "SU_MaterialChanger/images/material_changer_large.png"
   change_materials_text = "Change Materials"
   change_materials_cmd.tooltip = change_materials_text
   change_materials_cmd.menu_text = change_materials_text
   change_materials_cmd.status_bar_text = change_materials_text
 
-  # ----------------------------------------------------------------------------
-  # Create and add the Utilities submenu.
-  # ----------------------------------------------------------------------------
+  # Create and add the Change Material submenu item to the Edit menu.
   utils_submenu = UI.menu("Edit").add_item change_materials_cmd
 
-  # ----------------------------------------------------------------------------
   # Create and add the context menu shortcuts.
-  # ----------------------------------------------------------------------------
   UI.add_context_menu_handler do |context_menu|
     context_menu.add_separator
     context_menu.add_item change_materials_cmd
   end
 
-  # ----------------------------------------------------------------------------
-  # Create and add the Utilities toolbar.
-  # ----------------------------------------------------------------------------
+  # Create and add the Change Material toolbar item.
   change_materials_toolbar = UI::Toolbar.new("Change Materials")
   change_materials_toolbar.add_item change_materials_cmd
   change_materials_toolbar.show
