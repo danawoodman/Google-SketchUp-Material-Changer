@@ -16,7 +16,7 @@ You **MUST** have materials already in your model for this plugin to work. What 
 
 The material changer will change the **material** of Components, Groups, Edges and Faces. It will also change the **back material** of Faces.
 
-The plugin works recursively through your selection. What this means is that if it will change the material of *every* item you select, including sub-groups/components. If you select a group of multiple groups it will change the material of the parent group and all its child groups and those child group's edges/faces.
+The plugin works recursively through your selection. What this means is that it will change the material of *every* item you select, including sub-groups/components. If you select a group of multiple groups it will change the material of the parent group and all its child groups and those child group's edges/faces.
 
 If you do not select anything in your model, you will be prompted to select everything in the model.
 
