@@ -67,7 +67,7 @@ class SU_ChangeMaterial
     # we can do different things based on the type.
     etype = entity.typename
     
-    puts "\nentity: #{entity}"
+    puts "\nentity: #{entity}" if @debug
     puts "etype: #{etype}" if @debug
     
     # See if the entity is a face, group, component or something else. If the 
