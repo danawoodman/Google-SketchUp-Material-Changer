@@ -39,6 +39,8 @@
 #             : SketchUp Plugins folder.
 #-----------------------------------------------------------------------------
 
+$debug = false # Turns on or off debugging in the SU_ChangeMaterial Class.
+
 # TODO: Performance improvements. I'm sure the recursion I'm doing here isn't 
 # needed. Get material changes working faster for large groups of entities.
 
@@ -46,11 +48,10 @@ class SU_ChangeMaterial
 
   # Intialize the class by creating instance variables that we will use later.
   def initialize
-  
-    @debug = false # Turns on or off debugging in this Class.
+    
     @model = Sketchup.active_model
     @selection = @model.selection
-    @materials = @model.materials
+    @materials = @model.materials.sort # Sort materials alphabetically.
     @material_names = @materials.collect { |m| m.name }
     @material_display_names = @materials.collect { |m| m.display_name }
     @new_face_material = nil
@@ -67,8 +68,8 @@ class SU_ChangeMaterial
     # we can do different things based on the type.
     etype = entity.typename
     
-    puts "\nentity: #{entity}" if @debug
-    puts "etype: #{etype}" if @debug
+    puts "\nentity: #{entity}" if $debug
+    puts "etype: #{etype}" if $debug
     
     # See if the entity is a face, group, component or something else. If the 
     # entity is a face we will change it's face and back material. If it is a 
@@ -83,7 +84,7 @@ class SU_ChangeMaterial
         if @new_face_material
 
           entity.material = @new_face_material
-          puts "Face (#{entity}) face material changed to #{@new_face_material}" if @debug
+          puts "Face (#{entity}) face material changed to #{@new_face_material}" if $debug
 
         end
     
@@ -92,7 +93,7 @@ class SU_ChangeMaterial
         if @new_back_material
 
           entity.back_material = @new_back_material
-          puts "Face (#{entity}) back material changed to #{@new_face_material}" if @debug
+          puts "Face (#{entity}) back material changed to #{@new_face_material}" if $debug
 
         end
 
@@ -105,7 +106,7 @@ class SU_ChangeMaterial
           # Edges can have a face material but not a back material, so let's 
           # just give the edge the face material.
           entity.material = @new_face_material
-          puts "Edge (#{entity}) material changed to #{@new_face_material}" if @debug
+          puts "Edge (#{entity}) material changed to #{@new_face_material}" if $debug
           
         end
         
@@ -118,7 +119,7 @@ class SU_ChangeMaterial
           # Groups can have a face material but not a back material, so let's 
           # just give the group the face material.
           entity.material = @new_face_material
-          puts "Group (#{entity}) material changed to #{@new_face_material}" if @debug
+          puts "Group (#{entity}) material changed to #{@new_face_material}" if $debug
           
         end
         
@@ -135,7 +136,7 @@ class SU_ChangeMaterial
           # Components can have a face material but not a back material, so let's 
           # just give the component the face material.
           entity.material = @new_face_material
-          puts "Component (#{entity}) material changed to #{@new_face_material}" if @debug
+          puts "Component (#{entity}) material changed to #{@new_face_material}" if $debug
           
         end
         
@@ -147,7 +148,7 @@ class SU_ChangeMaterial
         
         # Another entity was found that does not have a 
         # material property, do nothing...
-        puts "An entity was found that cannot have a material property..." if @debug
+        puts "An entity was found that cannot have a material property..." if $debug
       
     end
     
@@ -166,7 +167,7 @@ class SU_ChangeMaterial
       
       if result == 1
         
-        puts "User has no materials in their model, cancel the action." if @debug
+        puts "User has no materials in their model, cancel the action." if $debug
       
         return
         
@@ -178,14 +179,14 @@ class SU_ChangeMaterial
     # everything in the model.
     if @selection.empty?
 
-      puts "Selection was empty, ask user if they want to select everything in model..." if @debug
+      puts "Selection was empty, ask user if they want to select everything in model..." if $debug
 
       result = UI.messagebox "You did not select anything, do you want to select everything in the model?", MB_YESNO
 
       # If they choose yes, then let's select everything
       if result == 6 # Yes
 
-        puts "User chose to select everything in the model, selecting everything now..." if @debug
+        puts "User chose to select everything in the model, selecting everything now..." if $debug
         
         # If there are no entities in the model, return with an error because 
         # for this plugin to work they need at least one entity.
@@ -207,7 +208,7 @@ class SU_ChangeMaterial
       # the material of, so let's quit out of the action.
       else
 
-        puts "User chose to not select everything, cancel out of action..." if @debug
+        puts "User chose to not select everything, cancel out of action..." if $debug
         
         return
 
@@ -219,7 +220,7 @@ class SU_ChangeMaterial
     # entities within the selection, not just the parent entity.
     @selection_entities = @selection.collect { |e| e }
     
-    puts "@selection_entities:\n#{@selection_entities}" if @debug
+    puts "@selection_entities:\n#{@selection_entities}" if $debug
 
     # Create the input box's prompts.
     prompts = ["Face Material", "Back material"]
@@ -239,16 +240,16 @@ class SU_ChangeMaterial
     # drop-down list of possible values.
     list = [materials_piped_list, materials_piped_list]
     
-    puts "\n@selection: \n #{@selection}" if @debug
-    puts "prompts:\n#{(prompts).to_a}\n" if @debug
-    puts "defaults:\n#{(defaults).to_a}\n" if @debug
-    puts "materials_list:\n#{(materials_list).to_a}\n" if @debug
-    puts "list:\n #{(list).to_a}" if @debug
+    puts "\n@selection: \n #{@selection}" if $debug
+    puts "prompts:\n#{(prompts).to_a}\n" if $debug
+    puts "defaults:\n#{(defaults).to_a}\n" if $debug
+    puts "materials_list:\n#{(materials_list).to_a}\n" if $debug
+    puts "list:\n #{(list).to_a}" if $debug
 
     # Create the inputbox with the above prompts and values.
     results = inputbox prompts, defaults, list, "Change Materials of Selection"
     
-    puts "\nresults: #{results}" if @debug
+    puts "\nresults: #{results}" if $debug
 
     # Return if the input box was closed or cancelled.
     return if not results
@@ -259,19 +260,19 @@ class SU_ChangeMaterial
     @new_face_material = materials_list.first == results[0] ? nil : @material_names[new_face_material_index - 1]
     @new_back_material = materials_list.first == results[1] ? nil : @material_names[new_back_material_index - 1]
     
-    puts "\n@new_face_material: #{@new_face_material}" if @debug
-    puts "@new_back_material: #{@new_back_material}" if @debug
+    puts "\n@new_face_material: #{@new_face_material}" if $debug
+    puts "@new_back_material: #{@new_back_material}" if $debug
     
     # If there is no change in the face and back materials, exit out of 
     # the action.
     if @new_face_material || @new_back_material
       
-      puts "\nA new face or back material was selected." if @debug
+      puts "\nA new face or back material was selected." if $debug
       
       # Change the material for each entity in the selection.
       @model.start_operation "Change Materials" # Wrap up everything in one UNDO action.
 
-        puts "\nChanging the material for each item in the selection..." if @debug
+        puts "\nChanging the material for each item in the selection..." if $debug
 
         @selection_entities.each { |s| change_material(s) }
 
@@ -279,7 +280,7 @@ class SU_ChangeMaterial
     
     else
       
-      puts "No new face or back material selected." if @debug
+      puts "No new face or back material selected." if $debug
       
     end
     
