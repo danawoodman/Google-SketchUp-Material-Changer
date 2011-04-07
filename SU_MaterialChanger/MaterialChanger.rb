@@ -1,6 +1,7 @@
 # TODO: Performance improvements. I'm sure the recursion I'm doing here isn't 
 # needed. Get material changes working faster for large groups of entities.
 
+
 class SU_ChangeMaterial
   
   # Intialize the class by creating instance variables that we will use later.
@@ -25,7 +26,6 @@ class SU_ChangeMaterial
     etype = entity.typename
     
     puts "\nentity: #{entity}" if @debug
-    puts "etype: #{etype}" if @debug
     
     # See if the entity is a face, group, component or something else. If the 
     # entity is a face we will change it's face and back material. If it is a 
@@ -39,7 +39,7 @@ class SU_ChangeMaterial
         # change the material.
         if @new_face_material
           entity.material = @new_face_material
-          puts "Face (#{entity}) face material changed to #{@new_face_material}" if @debug
+          puts "Face face material changed to #{@new_face_material}" if @debug
         end
         
         # Check to see if there is a new back material for the entity, if so 
@@ -57,7 +57,7 @@ class SU_ChangeMaterial
           # Edges can have a face material but not a back material, so let's 
           # just give the edge the face material.
           entity.material = @new_face_material
-          puts "Edge (#{entity}) material changed to #{@new_face_material}" if @debug
+          puts "Edge material changed to #{@new_face_material}" if @debug
         end
         
       when "Group"
@@ -68,7 +68,7 @@ class SU_ChangeMaterial
           # Groups can have a face material but not a back material, so let's 
           # just give the group the face material.
           entity.material = @new_face_material
-          puts "Group (#{entity}) material changed to #{@new_face_material}" if @debug
+          puts "Group material changed to #{@new_face_material}" if @debug
         end
         
         # Since this is a group, we need to now recurse through it to get all 
@@ -83,7 +83,7 @@ class SU_ChangeMaterial
           # Components can have a face material but not a back material, so let's 
           # just give the component the face material.
           entity.material = @new_face_material
-          puts "Component (#{entity}) material changed to #{@new_face_material}" if @debug
+          puts "Component material changed to #{@new_face_material}" if @debug
         end
         
         # Since this is a component, we need to now recurse through it to get all 
@@ -179,11 +179,11 @@ class SU_ChangeMaterial
     # drop-down list of possible values.
     list = [materials_piped_list, materials_piped_list]
     
-    puts "\n@selection: \n #{@selection}" if @debug
-    puts "prompts:\n#{(prompts).to_a}\n" if @debug
-    puts "defaults:\n#{(defaults).to_a}\n" if @debug
-    puts "materials_list:\n#{(materials_list).to_a}\n" if @debug
-    puts "list:\n #{(list).to_a}" if @debug
+    puts "\n@selection: #{@selection.inspect}" if @debug
+    puts "prompts: #{(prompts).to_a}\n" if @debug
+    puts "defaults: #{(defaults).to_a}\n" if @debug
+    puts "materials_list: #{(materials_list).to_a}\n" if @debug
+    puts "list: #{(list).to_a}" if @debug
     
     # Create the inputbox with the above prompts and values.
     results = inputbox prompts, defaults, list, "Change Materials of Selection"
@@ -227,7 +227,10 @@ class SU_ChangeMaterial
   
 end
 
-
+# Create the command material changer class, create and show the toolbar, context 
+# menus and the menu items for the tools.
+#
+# Only load these tools if the SU_MaterialChanger/MaterialChanger.rb file is not already loaded.
 if ( not file_loaded?(File.join(MATERIAL_CHANGER_BASE_PATH, "SU_MaterialChanger/MaterialChanger.rb")) )
   
   # Create the Change Material command.
