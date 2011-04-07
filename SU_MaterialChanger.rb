@@ -43,7 +43,7 @@ require 'sketchup.rb'
 require 'extensions.rb'
 
 # Turns on or off debugging in the SU_ChangeMaterial Class.
-MATERIAL_CHANGER_DEBUG = true
+MATERIAL_CHANGER_DEBUG = false
 MATERIAL_CHANGER_BASE_PATH = File.dirname(__FILE__)
 
 # Register plugin as an extension.
