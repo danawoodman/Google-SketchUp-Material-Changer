@@ -12,13 +12,17 @@ Once you select something and select "Change Materials" a pop-up dialog will com
 
 ## Notes and Caveats
 
-You **MUST** have materials already in your model for this plugin to work. What that means is that the plugin cannot read from your list of materials but can only see materials in your model. If you want to replace the material of some selection, you must first have the material you want to change to in the model.
+You **MUST** have materials already in your model for this plugin to work. What that means is that the plugin cannot read from your list of materials but **can only see materials in your model**. If you want to replace the material of some selection, you must first have the material you want to change to in the model.
 
-The material changer will change the **material** of Components, Groups, Edges and Faces. It will also change the **back material** of Faces.
+The material changer can change the **material** of Components, Groups, Edges and Faces. It can also change the **back material** of Faces.
 
-The plugin works recursively through your selection. What this means is that it will change the material of *every* item you select, including sub-groups/components. If you select a group of multiple groups it will change the material of the parent group and all its child groups and those child group's edges/faces.
+The plugin works recursively through your selection. What this means is that it will change the material of **every item you select**, including sub-groups/components. If you select a group of multiple groups *it will change the material of the parent group and all its child groups* and those child group's edges/faces.
 
 If you do not select anything in your model, you will be prompted to select everything in the model.
+
+There are two constants that this plugin provides: `MATERIAL_CHANGER_DEBUG` and `MATERIAL_CHANGER_BASE_PATH`. You should only need to care about `MATERIAL_CHANGER_DEBUG` however.
+
+`MATERIAL_CHANGER_DEBUG`, if set to `true` will show debugging messages that may help you in figuring out what the plugin is doing, which may help you debug issues you are having.
 
 
 ## Installation
