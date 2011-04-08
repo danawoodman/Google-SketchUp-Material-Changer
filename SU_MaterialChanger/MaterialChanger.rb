@@ -21,82 +21,82 @@ class SU_ChangeMaterial
   # material are.
   def change_material(entity)
     
-    # Define the typename of the entity (e.g. "Face", "Group", etc...) so 
-    # we can do different things based on the type.
-    etype = entity.typename
-    
     puts "\nentity: #{entity}" if @debug
+    
+    # start_time = Time.new()
     
     # See if the entity is a face, group, component or something else. If the 
     # entity is a face we will change it's face and back material. If it is a 
     # group/component, lets loop through each entity in the group/component and 
     # recurse through this method to find all the faces within it.
-    case etype
-      
-      when "Face"
+    if entity.is_a? Sketchup::Face
           
-        # Check to see if there is a new face material for the entity, if so 
-        # change the material.
-        if @new_face_material
-          entity.material = @new_face_material
-          puts "Face face material changed to #{@new_face_material}" if @debug
-        end
-        
-        # Check to see if there is a new back material for the entity, if so 
-        # change the material.
-        if @new_back_material
-          entity.back_material = @new_back_material
-          puts "Face (#{entity}) back material changed to #{@new_face_material}" if @debug
-        end
-        
-      when "Edge"
-        
-        # Check to see if there is a new face material for the entity, if so 
-        # change the material.
-        if @new_face_material
-          # Edges can have a face material but not a back material, so let's 
-          # just give the edge the face material.
-          entity.material = @new_face_material
-          puts "Edge material changed to #{@new_face_material}" if @debug
-        end
-        
-      when "Group"
-        
-        # Check to see if there is a new face material for the entity, if so 
-        # change the material.
-        if @new_face_material
-          # Groups can have a face material but not a back material, so let's 
-          # just give the group the face material.
-          entity.material = @new_face_material
-          puts "Group material changed to #{@new_face_material}" if @debug
-        end
-        
-        # Since this is a group, we need to now recurse through it to get all 
-        # the entities within it.
-        entity.entities.each { |e| change_material(e) }
-        
-      when "ComponentInstance"
-        
-        # Check to see if there is a new face material for the entity, if so 
-        # change the material.
-        if @new_face_material
-          # Components can have a face material but not a back material, so let's 
-          # just give the component the face material.
-          entity.material = @new_face_material
-          puts "Component material changed to #{@new_face_material}" if @debug
-        end
-        
-        # Since this is a component, we need to now recurse through it to get all 
-        # the entities within it.
-        entity.entities.each { |e| change_material(e) }
+      # Check to see if there is a new face material for the entity, if so 
+      # change the material.
+      if @new_face_material
+        entity.material = @new_face_material
+        puts "Face face material changed to #{@new_face_material}" if @debug
+      end
       
-      else
-        
-        # Another entity was found that does not have a 
-        # material property, do nothing...
-        puts "An entity was found that cannot have a material property..." if @debug
+      # Check to see if there is a new back material for the entity, if so 
+      # change the material.
+      if @new_back_material
+        entity.back_material = @new_back_material
+        puts "Face (#{entity}) back material changed to #{@new_face_material}" if @debug
+      end
       
+    elsif entity.is_a? Sketchup::Edge
+        
+      # Check to see if there is a new face material for the entity, if so 
+      # change the material.
+      if @new_face_material
+        # Edges can have a face material but not a back material, so let's 
+        # just give the edge the face material.
+        entity.material = @new_face_material
+        puts "Edge material changed to #{@new_face_material}" if @debug
+      end
+        
+    elsif entity.is_a? Sketchup::Group
+        
+      # Check to see if there is a new face material for the entity, if so 
+      # change the material.
+      if @new_face_material
+        # Groups can have a face material but not a back material, so let's 
+        # just give the group the face material.
+        entity.material = @new_face_material
+        puts "Group material changed to #{@new_face_material}" if @debug
+      end
+      
+      # Since this is a group, we need to now recurse through it to get all 
+      # the entities within it.
+      entity.entities.each { |e| change_material(e) }
+      
+    elsif entity.is_a? Sketchup::ComponentInstance
+        
+      # Check to see if there is a new face material for the entity, if so 
+      # change the material.
+      if @new_face_material
+        # Components can have a face material but not a back material, so let's 
+        # just give the component the face material.
+        entity.material = @new_face_material
+        puts "Component material changed to #{@new_face_material}" if @debug
+      end
+      
+      # Since this is a component, we need to now recurse through it to get all 
+      # the entities within it.
+      entity.definition.entities.each { |e| change_material(e) }
+    
+    else
+        
+      # Another entity was found that does not have a 
+      # material property, do nothing...
+      puts "An entity was found that cannot have a material property..." if @debug
+    
     end
+    
+    # end_time = Time.new()
+    # 
+    # puts "Elapsed: #{end_time - start_time}"
     
   end
   
